@@ -1,0 +1,16 @@
+# Ajouter à requirements.txt existant
+
+# IA et NLP avancé
+transformers>=4.30.0
+torch>=2.0.0
+sentence-transformers>=2.2.0
+spacy>=3.6.0
+
+# Web scraping et APIs
+beautifulsoup4>=4.12.0
+newspaper3k>=0.2.8
+
+# Variables d'environnement
+python-dotenv>=1.0.0
+
+# Tout le reste (déjà dans requirements.txt)

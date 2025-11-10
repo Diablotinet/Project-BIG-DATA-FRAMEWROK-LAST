@@ -1,0 +1,69 @@
+# Docker ignore file - Exclude unnecessary files from container
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Data files (will be mounted as volumes)
+data/
+*.db
+*.sqlite
+
+# Downloaded dependencies (rebuilt in container)
+downloads/
+kafka_2.13-3.6.0/
+spark-3.5.0-bin-hadoop3/
+
+# Scripts (not needed in container)
+scripts/
+*.bat
+
+# Documentation
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test files
+test_*.py
+*_test.py
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.temp
+~$*

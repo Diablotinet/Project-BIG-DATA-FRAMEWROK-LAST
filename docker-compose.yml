@@ -1,0 +1,210 @@
+# 🐳 Docker Compose - AFP Real-Time Analytics System
+# Complete multi-container setup with Zookeeper, Kafka, Spark, and Application
+
+version: '3.8'
+
+services:
+  # ========================================
+  # ZOOKEEPER - Kafka Coordination
+  # ========================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: afp-zookeeper
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    networks:
+      - afp-network
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-logs:/var/lib/zookeeper/log
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # KAFKA BROKER - Message Streaming
+  # ========================================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: afp-kafka
+    hostname: kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+    networks:
+      - afp-network
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ========================================
+  # KAFKA INIT - Topic Creation
+  # ========================================
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: afp-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - afp-network
+    command: >
+      bash -c "
+        echo 'Waiting for Kafka to be ready...'
+        sleep 10
+        
+        echo 'Creating Kafka topics...'
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --topic afp_news_stream --partitions 3 --replication-factor 1
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --topic reddit_comparisons --partitions 3 --replication-factor 1
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --topic gdelt_events --partitions 3 --replication-factor 1
+        
+        echo 'Listing created topics:'
+        kafka-topics --list --bootstrap-server kafka:29092
+        
+        echo 'Topics created successfully!'
+      "
+
+  # ========================================
+  # AFP PRODUCER - News Data Generator
+  # ========================================
+  afp-producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: afp-producer
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      PYTHONUNBUFFERED: 1
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    networks:
+      - afp-network
+    volumes:
+      - ./afp_news_cache.json:/app/afp_news_cache.json:ro
+      - ./logs:/app/logs
+    command: python src/producers/afp_realtime_producer_complete.py
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ========================================
+  # SPARK CONSUMER - Stream Processing
+  # ========================================
+  spark-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: afp-spark-consumer
+    depends_on:
+      - kafka-init
+      - afp-producer
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      PYTHONUNBUFFERED: 1
+      SPARK_LOCAL_IP: spark-consumer
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "4040:4040"  # Spark UI
+    networks:
+      - afp-network
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - spark-warehouse:/app/spark-warehouse
+    command: >
+      python src/consumers/spark_afp_realtime_consumer.py
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4040"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ========================================
+  # STREAMLIT DASHBOARD - Visualization
+  # ========================================
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: afp-dashboard
+    depends_on:
+      - spark-consumer
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      PYTHONUNBUFFERED: 1
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "8501:8501"  # Streamlit dashboard
+    networks:
+      - afp-network
+    volumes:
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+    command: >
+      streamlit run src/dashboard/dashboard_organized.py 
+      --server.port=8501 
+      --server.address=0.0.0.0
+      --server.headless=true
+      --browser.gatherUsageStats=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+# ========================================
+# NETWORKS
+# ========================================
+networks:
+  afp-network:
+    driver: bridge
+    name: afp-analytics-network
+
+# ========================================
+# VOLUMES - Persistent Storage
+# ========================================
+volumes:
+  zookeeper-data:
+    name: afp-zookeeper-data
+  zookeeper-logs:
+    name: afp-zookeeper-logs
+  kafka-data:
+    name: afp-kafka-data
+  spark-warehouse:
+    name: afp-spark-warehouse
