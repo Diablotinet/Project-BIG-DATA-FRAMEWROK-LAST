@@ -144,10 +144,13 @@ class AFPRealtimeComparator:
             self.logger.info("🚀 Starting Kafka stream consumption...")
             
             # Read from multiple Kafka topics
+            # Use environment variable so the container can reach Kafka (e.g. 'kafka:29092')
+            kafka_bootstrap = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+
             kafka_stream = self.spark \
                 .readStream \
                 .format("kafka") \
-                .option("kafka.bootstrap.servers", "localhost:9092") \
+                .option("kafka.bootstrap.servers", kafka_bootstrap) \
                 .option("subscribe", "afp_news_stream,reddit_comparison_stream,gdelt_comparison_stream") \
                 .option("startingOffsets", "latest") \
                 .option("failOnDataLoss", "false") \

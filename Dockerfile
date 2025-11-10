@@ -20,7 +20,10 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip and install requirements; ensure findspark is explicitly installed
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir findspark
 
 # Download Spark (lightweight approach)
 ENV SPARK_VERSION=3.5.0
@@ -38,8 +41,7 @@ ENV PYSPARK_DRIVER_PYTHON=python3
 
 # Copy application files
 COPY src/ ./src/
-COPY requirements.txt .
-COPY afp_news_cache.json ./
+COPY config/afp_news_cache.json ./afp_news_cache.json
 
 # Create data directories
 RUN mkdir -p /app/data /app/logs

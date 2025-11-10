@@ -8,6 +8,7 @@ Simulates information propagation across multiple sources
 import json
 import time
 import logging
+import os
 from datetime import datetime, timedelta
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
@@ -83,8 +84,15 @@ class AFPRealtimeProducer:
     def connect_kafka(self):
         """Connect to Kafka"""
         try:
+            # Read bootstrap servers from environment so containers can connect to the broker
+            kafka_bootstrap = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+            if isinstance(kafka_bootstrap, str):
+                bootstrap_list = [s.strip() for s in kafka_bootstrap.split(',') if s.strip()]
+            else:
+                bootstrap_list = kafka_bootstrap
+
             self.producer = KafkaProducer(
-                bootstrap_servers=['localhost:9092'],
+                bootstrap_servers=bootstrap_list,
                 value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                 acks='all',
                 retries=3
