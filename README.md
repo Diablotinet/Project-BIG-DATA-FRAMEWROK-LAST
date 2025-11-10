@@ -2,7 +2,7 @@
 
 A real-time streaming analytics platform that compares news articles from multiple sources (AFP, Reddit, GDELT) using advanced ML-based analysis with Kafka and Apache Spark.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker Desktop (latest version)
@@ -23,7 +23,7 @@ docker-compose up -d
 Start-Process "http://localhost:8501"
 \\\
 
-## 📊 System Components
+## System Components
 
 ### Architecture
 - **Zookeeper**: Kafka coordination
@@ -41,7 +41,7 @@ Start-Process "http://localhost:8501"
 5. **Storage**: Results stored in SQLite database
 6. **Visualization**: Dashboard displays real-time insights
 
-## 📈 ML Analysis Features
+## ML Analysis Features
 
 Each article comparison includes:
 - **Headline Comparison**: Framing and focus differences
@@ -51,7 +51,7 @@ Each article comparison includes:
 - **Framing Analysis**: Narrative structure comparison
 - **Comprehensive Verdict**: Reliability classification (Low/Moderate/High)
 
-## 🎛️ Monitoring & Verification
+## Monitoring & Verification
 
 ### Check System Status
 \\\powershell
@@ -73,7 +73,7 @@ docker exec afp-spark-consumer sqlite3 /app/data/afp_realtime_analysis.db
 docker-compose down
 \\\
 
-## 📊 Dashboard Features
+## Dashboard Features
 
 Access the dashboard at: **http://localhost:8501**
 
@@ -112,7 +112,7 @@ Access the dashboard at: **http://localhost:8501**
 └── README.md                        # This file
 \\\
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 Copy \.env.template\ to \.env\ and customize:
@@ -122,7 +122,7 @@ Copy \.env.template\ to \.env\ and customize:
 - \REDDIT_KEYWORDS\: Search terms for Reddit
 - \GDELT_DATABASE\: GDELT data source
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Containers not starting
 \\\powershell
@@ -143,7 +143,7 @@ docker ps | grep dashboard
 docker logs afp-dashboard
 \\\
 
-## 📊 Project Requirements - Verification
+## Project Requirements - Verification
 
 ✅ **Multi-Source Data Ingestion**: AFP, Reddit, GDELT  
 ✅ **Streaming Data Processing**: Kafka + Spark integration  
@@ -155,7 +155,7 @@ docker logs afp-dashboard
 ✅ **Sentiment Scoring**: VADER sentiment analysis  
 ✅ **Anomaly Detection**: Deformation-based alerts  
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 - **Processing Speed**: 4-8 matches per 5-second batch
 - **Analysis Quality**: 2,000+ character comprehensive reports per comparison
@@ -163,17 +163,17 @@ docker logs afp-dashboard
 - **Memory Usage**: ~2GB for all 6 containers
 - **CPU Usage**: 20-30% average
 
-## 🤝 Data Sources
+## Data Sources
 
 - **AFP**: Simulated news articles (can integrate real API)
 - **Reddit**: Real-time Reddit post data via API
 - **GDELT**: Global Event, Location and Tone dataset
 
-## 📝 License
+## License
 
 Academic project - EFREI Paris
 
-## 👥 Support
+## Support
 
 For issues or questions, refer to:
 - PROJECT_COMPLETION_REPORT.md - Detailed system documentation

@@ -1,6 +1,6 @@
-# 🏗️ AFP Analytics System - Complete Architecture
+# AFP Analytics System - Complete Architecture
 
-## 📊 Container Architecture Diagram
+## Container Architecture Diagram
 
 ```
 ╔════════════════════════════════════════════════════════════════════╗
@@ -260,7 +260,7 @@ docker exec afp-kafka kafka-run-class kafka.tools.GetOffsetShell \
 docker exec afp-kafka kafka-consumer-groups --bootstrap-server localhost:29092 --list
 ```
 
-## 🎯 Key Features
+## Key Features
 
 ### 1. **Automatic Orchestration**
    - Services start in correct order
@@ -287,7 +287,7 @@ docker exec afp-kafka kafka-consumer-groups --bootstrap-server localhost:29092 -
    - No port conflicts
    - Clean environment
 
-## 🚀 Deployment Options
+## Deployment Options
 
 ### Development (Current)
 ```yaml
@@ -306,4 +306,4 @@ docker-compose up --scale afp-producer=3 -d
 
 ---
 
-**Architecture designed for academic requirements and production readiness!** 🎓🚀
+**Architecture designed for academic requirements and production readiness!** 

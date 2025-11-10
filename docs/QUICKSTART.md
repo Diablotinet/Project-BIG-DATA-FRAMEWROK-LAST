@@ -1,6 +1,6 @@
-# 🚀 QUICK START GUIDE - AFP Real-Time Analytics
+# QUICK START GUIDE - AFP Real-Time Analytics
 
-## ⚡ 5-Minute Setup
+## 5-Minute Setup
 
 ### Step 1: Install Dependencies (1 minute)
 
@@ -44,13 +44,13 @@ python spark_afp_realtime_consumer.py
 streamlit run dashboard_afp_realtime_complete.py
 ```
 
-### Step 4: View Results! ✅
+### Step 4: View Results! 
 
 Open browser: **http://localhost:8501**
 
 ---
 
-## 🎯 What You'll See
+## What You'll See
 
 ### Dashboard Metrics
 - 📰 **AFP Articles** - Official news count
@@ -66,7 +66,7 @@ Open browser: **http://localhost:8501**
 
 ---
 
-## 🔍 Expected Output Examples
+## Expected Output Examples
 
 ### Producer Console:
 ```
@@ -85,7 +85,7 @@ Open browser: **http://localhost:8501**
 
 ### Dashboard:
 ```
-📊 Real-Time Metrics
+Real-Time Metrics
 ━━━━━━━━━━━━━━━━━━━
 📰 AFP Articles: 15
 💬 Reddit: 35 (2.3 per article)
@@ -96,7 +96,7 @@ Open browser: **http://localhost:8501**
 
 ---
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
 ### "Kafka connection refused"
 - ✅ Wait 20 seconds after starting Kafka
@@ -113,7 +113,7 @@ Open browser: **http://localhost:8501**
 
 ---
 
-## 📊 Success Indicators
+## Success Indicators
 
 ✅ **Producer:** Sending 1 article every 10-20 seconds  
 ✅ **Consumer:** Processing batches every 5 seconds  
@@ -122,7 +122,7 @@ Open browser: **http://localhost:8501**
 
 ---
 
-## 🎓 For Your Presentation
+## For Our Presentation
 
 ### Demo Flow (5 minutes):
 1. Show all 6 terminals running ✅
@@ -141,7 +141,7 @@ Open browser: **http://localhost:8501**
 
 ---
 
-## 📝 Files You Created
+## Files We Created
 
 1. `afp_realtime_producer_complete.py` - Produces AFP/Reddit/GDELT
 2. `spark_afp_realtime_consumer.py` - Processes with Spark
@@ -151,7 +151,7 @@ Open browser: **http://localhost:8501**
 
 ---
 
-## 🎯 Next Steps
+## Next Steps
 
 1. ✅ Run the system
 2. ✅ Watch real-time processing
@@ -163,4 +163,3 @@ Open browser: **http://localhost:8501**
 
 **Ready? Run:** `launch_afp_complete_system.bat`
 
-**Good luck! 🚀**

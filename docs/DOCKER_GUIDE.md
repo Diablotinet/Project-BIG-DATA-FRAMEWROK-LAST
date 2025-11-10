@@ -1,6 +1,6 @@
 # 🐳 Docker Deployment Guide - AFP Real-Time Analytics System
 
-## 📋 Overview
+## Overview
 
 This Docker setup containerizes the entire AFP analytics system:
 - ✅ **Zookeeper** - Kafka coordination (port 2181)
@@ -9,7 +9,7 @@ This Docker setup containerizes the entire AFP analytics system:
 - ✅ **Spark Consumer** - Real-time stream processing (Spark UI: port 4040)
 - ✅ **Streamlit Dashboard** - Interactive visualization (port 8501)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 1. **Docker Desktop** installed ([Download](https://www.docker.com/products/docker-desktop))
@@ -36,7 +36,7 @@ Once running, access:
 - **Spark UI**: http://localhost:4040
 - **Kafka**: localhost:9092 (internal)
 
-## 📦 Container Architecture
+## Container Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -62,7 +62,7 @@ Once running, access:
 └─────────────────────────────────────────────────┘
 ```
 
-## 🔧 Docker Commands
+## Docker Commands
 
 ### Starting Services
 ```powershell
@@ -121,7 +121,7 @@ docker exec afp-kafka kafka-console-consumer --bootstrap-server localhost:29092 
 docker inspect --format='{{.State.Health.Status}}' afp-kafka
 ```
 
-## 📊 Data Persistence
+## Data Persistence
 
 Volumes for persistent storage:
 - `afp-zookeeper-data` - Zookeeper data
@@ -135,7 +135,7 @@ docker volume ls
 docker volume inspect afp-kafka-data
 ```
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Problem: Containers not starting
 ```powershell
@@ -192,7 +192,7 @@ docker-compose restart dashboard
 docker inspect --format='{{.State.Health.Status}}' afp-dashboard
 ```
 
-## 🧪 Testing the System
+## Testing the System
 
 ### 1. Verify all containers are running
 ```powershell
@@ -220,7 +220,7 @@ Navigate to http://localhost:8501 in your browser
 ### 4. Wait for data accumulation
 Let the system run for 10-15 minutes to accumulate analytics
 
-## 🎯 Production Deployment
+## Production Deployment
 
 ### Build optimized images
 ```powershell
@@ -246,7 +246,7 @@ SPARK_MASTER=local[*]
 LOG_LEVEL=INFO
 ```
 
-## 📈 Performance Tuning
+## Performance Tuning
 
 ### Kafka optimization
 Edit `docker-compose.yml`:
@@ -268,7 +268,7 @@ spark-consumer:
     SPARK_EXECUTOR_CORES: 2
 ```
 
-## 🔒 Security (Production)
+## Security (Production)
 
 ### Enable authentication
 ```yaml
@@ -287,7 +287,7 @@ networks:
     internal: true  # No external access
 ```
 
-## 📝 Next Steps
+## Next Steps
 
 1. ✅ Start Docker Desktop
 2. ✅ Run `docker-compose up --build -d`
@@ -296,7 +296,7 @@ networks:
 5. ✅ Let system run for 10-15 minutes
 6. ✅ Take screenshots for presentation
 
-## 🆘 Support
+## Support
 
 Common issues:
 - **Windows path errors**: Fixed by Docker containerization
@@ -306,7 +306,7 @@ Common issues:
 
 For detailed logs: `docker-compose logs -f`
 
-## 🎓 Academic Compliance
+## Academic Compliance
 
 This Docker setup fulfills all project requirements:
 - ✅ Multi-source data ingestion (AFP, Reddit, GDELT)
@@ -319,4 +319,4 @@ This Docker setup fulfills all project requirements:
 
 ---
 
-**Ready for presentation!** 🚀
+**Ready for presentation!** 
